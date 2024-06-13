@@ -21,8 +21,8 @@ def create_tables():
             name TEXT NOT NULL,
             address TEXT NOT NULL,
             capacity INTEGER NOT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                      
         )
     ''')

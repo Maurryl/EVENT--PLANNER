@@ -32,111 +32,262 @@ def create_event():
     event = Event.create(name=name, description=description, date=date, location=location)
     print(f"\nEvent created successfully: {event}")
 
+# def create_guest():
+#     print("\nEnter Guest details:")
+#     name = input("Name: ")
+#     email = input("Email: ")
+#     phone = input("Phone: ")
+
+#     guest = Guest.create(name=name, email=email, phone=phone)
+#     print(f"\nGuest created successfully: {guest}")
 def create_guest():
-    print("\nEnter Guest details:")
-    name = input("Name: ")
-    email = input("Email: ")
-    phone = input("Phone: ")
+    name = input("Enter guest's name: ")
+    email = input("Enter guest's email: ")
+    phone = input("Enter guest's phone number: ")
 
-    guest = Guest.create(name=name, email=email, phone=phone)
-    print(f"\nGuest created successfully: {guest}")
+    # Create a new Guest instance
+    new_guest = Guest(name=name, email=email, phone=phone)
 
+    # Get SQLAlchemy session
+    session = SessionLocal()
+
+    try:
+        # Add the new guest to the session
+        session.add(new_guest)
+        session.commit()
+        print("Guest added successfully!")
+
+    except Exception as e:
+        session.rollback()
+        print(f"Error adding guest: {str(e)}")
+
+# def create_venue():
+#     print("\nEnter Venue details:")
+#     name = input("Name: ")
+#     address = input("Address: ")
+#     capacity = input("Capacity: ")
+
+#     venue = Venue.create(name=name, address=address, capacity=capacity)
+#     print(f"\nVenue created successfully: {venue}")
 def create_venue():
-    print("\nEnter Venue details:")
-    name = input("Name: ")
-    address = input("Address: ")
-    capacity = input("Capacity: ")
+    name = input("Enter venue's name: ")
+    address = input("Enter venue's address: ")
+    capacity = int(input("Enter venue's capacity: "))
 
-    venue = Venue.create(name=name, address=address, capacity=capacity)
-    print(f"\nVenue created successfully: {venue}")
+    # Create a new Venue instance
+    new_venue = Venue(name=name, address=address, capacity=capacity)
+
+    # Get SQLAlchemy session
+    session = SessionLocal()
+
+    try:
+        # Add the new venue to the session
+        session.add(new_venue)
+        session.commit()
+        print("Venue added successfully!")
+
+    except Exception as e:
+        session.rollback()
+        print(f"Error adding venue: {str(e)}")
+
+
+
+# def assign_venue_to_event():
+#     events = Event.get_all()
+#     venues = Venue.get_all()
+
+#     if not events:
+#         print("\nNo events available. Please create an event first.")
+#         return
+
+#     if not venues:
+#         print("\nNo venues available. Please create a venue first.")
+#         return
+
+#     print("\nAvailable Events:")
+#     for event in events:
+#         print(f"{event.id}. {event.name}")
+
+#     event_id = input("\nEnter Event ID to assign a venue to: ")
+#     try:
+#         event_id = int(event_id)
+#         event = Event.find_by_id(event_id)
+#         if event:
+#             print("\nAvailable Venues:")
+#             for venue in venues:
+#                 print(f"{venue.id}. {venue.name}")
+
+#             venue_id = input("\nEnter Venue ID to assign to this event: ")
+#             try:
+#                 venue_id = int(venue_id)
+#                 venue = Venue.find_by_id(venue_id)
+#                 if venue:
+#                     event_venue = EventVenue.create(event_id=event_id, venue_id=venue_id)
+#                     print(f"\nVenue '{venue.name}' assigned to Event '{event.name}' successfully.")
+#                 else:
+#                     print(f"\nVenue with ID {venue_id} not found.")
+#             except ValueError:
+#                 print("\nInvalid input. Please enter a valid Venue ID.")
+#         else:
+#             print(f"\nEvent with ID {event_id} not found.")
+#     except ValueError:
+#         print("\nInvalid input. Please enter a valid Event ID.")
 
 def assign_venue_to_event():
     events = Event.get_all()
-    venues = Venue.get_all()
-
     if not events:
-        print("\nNo events available. Please create an event first.")
+        print("No events found.")
         return
+    
+    print("Select an Event to assign a venue:")
+    for idx, event in enumerate(events, start=1):
+        print(f"{idx}. {event.name} - {event.date}")
 
-    if not venues:
-        print("\nNo venues available. Please create a venue first.")
-        return
-
-    print("\nAvailable Events:")
-    for event in events:
-        print(f"{event.id}. {event.name}")
-
-    event_id = input("\nEnter Event ID to assign a venue to: ")
     try:
-        event_id = int(event_id)
-        event = Event.find_by_id(event_id)
-        if event:
-            print("\nAvailable Venues:")
-            for venue in venues:
-                print(f"{venue.id}. {venue.name}")
+        event_choice = int(input("Enter the number of the event: ")) - 1
+        selected_event = events[event_choice]
+    except (IndexError, ValueError):
+        print("Invalid selection.")
+        return
+    
+    # Assuming you have a similar method to get all venues
+    from models.venue import Venue  # Make sure this import is at the top of your script
+    venues = Venue.get_all()
+    if not venues:
+        print("No venues found.")
+        return
+    
+    print("Select a Venue:")
+    for idx, venue in enumerate(venues, start=1):
+        print(f"{idx}. {venue.name} - {venue.location}")
 
-            venue_id = input("\nEnter Venue ID to assign to this event: ")
-            try:
-                venue_id = int(venue_id)
-                venue = Venue.find_by_id(venue_id)
-                if venue:
-                    event_venue = EventVenue.create(event_id=event_id, venue_id=venue_id)
-                    print(f"\nVenue '{venue.name}' assigned to Event '{event.name}' successfully.")
-                else:
-                    print(f"\nVenue with ID {venue_id} not found.")
-            except ValueError:
-                print("\nInvalid input. Please enter a valid Venue ID.")
-        else:
-            print(f"\nEvent with ID {event_id} not found.")
-    except ValueError:
-        print("\nInvalid input. Please enter a valid Event ID.")
+    try:
+        venue_choice = int(input("Enter the number of the venue: ")) - 1
+        selected_venue = venues[venue_choice]
+    except (IndexError, ValueError):
+        print("Invalid selection.")
+        return
+    
+    # Assign venue to event
+    # Assuming you have a method to assign venue in EventVenue class
+    from models.event_venue import EventVenue  # Make sure this import is at the top of your script
+    EventVenue.assign_venue_to_event(selected_event.id, selected_venue.id)
+    print(f"Venue '{selected_venue.name}' assigned to event '{selected_event.name}'.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def register_guest_for_event():
+#     events = Event.get_all()
+#     guests = Guest.get_all()
+
+#     if not events:
+#         print("\nNo events available. Please create an event first.")
+#         return
+
+#     if not guests:
+#         print("\nNo guests available. Please create a guest first.")
+#         return
+
+#     print("\nAvailable Events:")
+#     for event in events:
+#         print(f"{event.id}. {event.name}")
+
+#     event_id = input("\nEnter Event ID to register a guest to: ")
+#     try:
+#         event_id = int(event_id)
+#         event = Event.find_by_id(event_id)
+#         if event:
+#             print("\nAvailable Guests:")
+#             for guest in guests:
+#                 print(f"{guest.id}. {guest.name}")
+
+#             guest_id = input("\nEnter Guest ID to register for this event: ")
+#             try:
+#                 guest_id = int(guest_id)
+#                 guest = Guest.find_by_id(guest_id)
+#                 if guest:
+#                     event_guest = EventGuest.create(event_id=event_id, guest_id=guest_id)
+#                     print(f"\nGuest '{guest.name}' registered for Event '{event.name}' successfully.")
+#                 else:
+#                     print(f"\nGuest with ID {guest_id} not found.")
+#             except ValueError:
+#                 print("\nInvalid input. Please enter a valid Guest ID.")
+#         else:
+#             print(f"\nEvent with ID {event_id} not found.")
+#     except ValueError:
+#         print("\nInvalid input. Please enter a valid Event ID.")
+
 
 def register_guest_for_event():
     events = Event.get_all()
-    guests = Guest.get_all()
-
     if not events:
-        print("\nNo events available. Please create an event first.")
+        print("No events found.")
         return
+    
+    print("Select an Event to register for:")
+    for idx, event in enumerate(events, start=1):
+        print(f"{idx}. {event.name} - {event.date}")
 
-    if not guests:
-        print("\nNo guests available. Please create a guest first.")
-        return
-
-    print("\nAvailable Events:")
-    for event in events:
-        print(f"{event.id}. {event.name}")
-
-    event_id = input("\nEnter Event ID to register a guest to: ")
     try:
-        event_id = int(event_id)
-        event = Event.find_by_id(event_id)
-        if event:
-            print("\nAvailable Guests:")
-            for guest in guests:
-                print(f"{guest.id}. {guest.name}")
+        event_choice = int(input("Enter the number of the event: ")) - 1
+        selected_event = events[event_choice]
+    except (IndexError, ValueError):
+        print("Invalid selection.")
+        return
 
-            guest_id = input("\nEnter Guest ID to register for this event: ")
-            try:
-                guest_id = int(guest_id)
-                guest = Guest.find_by_id(guest_id)
-                if guest:
-                    event_guest = EventGuest.create(event_id=event_id, guest_id=guest_id)
-                    print(f"\nGuest '{guest.name}' registered for Event '{event.name}' successfully.")
-                else:
-                    print(f"\nGuest with ID {guest_id} not found.")
-            except ValueError:
-                print("\nInvalid input. Please enter a valid Guest ID.")
-        else:
-            print(f"\nEvent with ID {event_id} not found.")
-    except ValueError:
-        print("\nInvalid input. Please enter a valid Event ID.")
+    guest_name = input("Enter the guest's name: ")
+    guest_email = input("Enter the guest's email: ")
+
+    new_guest = Guest.create(name=guest_name, email=guest_email)
+    print(f"Guest '{new_guest.name}' registered for event '{selected_event.name}'.")
+
+    # Assuming you have a method to link guests to events
+    from models.event_guest import EventGuest  # Make sure this import is at the top of your script
+    EventGuest.register_guest_for_event(selected_event.id, new_guest.id)
+    print(f"Guest '{new_guest.name}' successfully registered for event '{selected_event.name}'.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def display_all_events():
+#     events = Event.get_all()
+#     print("\n===== All Events =====")
+#     for event in events:
+#         print(f"{event.id}. {event.name} - {event.date}")
 
 def display_all_events():
-    events = Event.get_all()
-    print("\n===== All Events =====")
-    for event in events:
-        print(f"{event.id}. {event.name} - {event.date}")
+    session = SessionLocal()
+    try:
+        events = Event.get_all(session)
+        for event in events:
+            print(f"Event: {event.name} | Date: {event.date} | Location: {event.location}")
+    except Exception as e:
+        print(f"Error fetching events: {str(e)}")
 
 def display_all_guests():
     guests = Guest.get_all()
