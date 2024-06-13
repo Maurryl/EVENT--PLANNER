@@ -1,5 +1,6 @@
 from models import Event, Guest, EventGuest, EventVenue, Venue, SessionLocal
 from datetime import datetime
+# from sqlalchemy_setup import SessionLocal
 
 def display_menu():
     print("\n===== Event Management Menu =====")
@@ -32,23 +33,11 @@ def create_event():
     event = Event.create(name=name, description=description, date=date, location=location)
     print(f"\nEvent created successfully: {event}")
 
-# def create_guest():
-#     print("\nEnter Guest details:")
-#     name = input("Name: ")
-#     email = input("Email: ")
-#     phone = input("Phone: ")
-
-#     guest = Guest.create(name=name, email=email, phone=phone)
-#     print(f"\nGuest created successfully: {guest}")
 def create_guest():
     name = input("Enter guest's name: ")
     email = input("Enter guest's email: ")
     phone = input("Enter guest's phone number: ")
-
-    # Create a new Guest instance
     new_guest = Guest(name=name, email=email, phone=phone)
-
-    # Get SQLAlchemy session
     session = SessionLocal()
 
     try:
@@ -61,23 +50,11 @@ def create_guest():
         session.rollback()
         print(f"Error adding guest: {str(e)}")
 
-# def create_venue():
-#     print("\nEnter Venue details:")
-#     name = input("Name: ")
-#     address = input("Address: ")
-#     capacity = input("Capacity: ")
-
-#     venue = Venue.create(name=name, address=address, capacity=capacity)
-#     print(f"\nVenue created successfully: {venue}")
 def create_venue():
     name = input("Enter venue's name: ")
     address = input("Enter venue's address: ")
     capacity = int(input("Enter venue's capacity: "))
-
-    # Create a new Venue instance
     new_venue = Venue(name=name, address=address, capacity=capacity)
-
-    # Get SQLAlchemy session
     session = SessionLocal()
 
     try:
@@ -91,47 +68,6 @@ def create_venue():
         print(f"Error adding venue: {str(e)}")
 
 
-
-# def assign_venue_to_event():
-#     events = Event.get_all()
-#     venues = Venue.get_all()
-
-#     if not events:
-#         print("\nNo events available. Please create an event first.")
-#         return
-
-#     if not venues:
-#         print("\nNo venues available. Please create a venue first.")
-#         return
-
-#     print("\nAvailable Events:")
-#     for event in events:
-#         print(f"{event.id}. {event.name}")
-
-#     event_id = input("\nEnter Event ID to assign a venue to: ")
-#     try:
-#         event_id = int(event_id)
-#         event = Event.find_by_id(event_id)
-#         if event:
-#             print("\nAvailable Venues:")
-#             for venue in venues:
-#                 print(f"{venue.id}. {venue.name}")
-
-#             venue_id = input("\nEnter Venue ID to assign to this event: ")
-#             try:
-#                 venue_id = int(venue_id)
-#                 venue = Venue.find_by_id(venue_id)
-#                 if venue:
-#                     event_venue = EventVenue.create(event_id=event_id, venue_id=venue_id)
-#                     print(f"\nVenue '{venue.name}' assigned to Event '{event.name}' successfully.")
-#                 else:
-#                     print(f"\nVenue with ID {venue_id} not found.")
-#             except ValueError:
-#                 print("\nInvalid input. Please enter a valid Venue ID.")
-#         else:
-#             print(f"\nEvent with ID {event_id} not found.")
-#     except ValueError:
-#         print("\nInvalid input. Please enter a valid Event ID.")
 
 def assign_venue_to_event():
     events = Event.get_all()
@@ -151,7 +87,7 @@ def assign_venue_to_event():
         return
     
     # Assuming you have a similar method to get all venues
-    from models.venue import Venue  # Make sure this import is at the top of your script
+    from models.venue import Venue  
     venues = Venue.get_all()
     if not venues:
         print("No venues found.")
@@ -170,7 +106,7 @@ def assign_venue_to_event():
     
     # Assign venue to event
     # Assuming you have a method to assign venue in EventVenue class
-    from models.event_venue import EventVenue  # Make sure this import is at the top of your script
+    from models.event_venue import EventVenue  
     EventVenue.assign_venue_to_event(selected_event.id, selected_venue.id)
     print(f"Venue '{selected_venue.name}' assigned to event '{selected_event.name}'.")
 
@@ -254,31 +190,11 @@ def register_guest_for_event():
     print(f"Guest '{new_guest.name}' registered for event '{selected_event.name}'.")
 
     # Assuming you have a method to link guests to events
-    from models.event_guest import EventGuest  # Make sure this import is at the top of your script
+    from models.event_guest import EventGuest  
     EventGuest.register_guest_for_event(selected_event.id, new_guest.id)
     print(f"Guest '{new_guest.name}' successfully registered for event '{selected_event.name}'.")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def display_all_events():
-#     events = Event.get_all()
-#     print("\n===== All Events =====")
-#     for event in events:
-#         print(f"{event.id}. {event.name} - {event.date}")
 
 def display_all_events():
     session = SessionLocal()
@@ -289,17 +205,22 @@ def display_all_events():
     except Exception as e:
         print(f"Error fetching events: {str(e)}")
 
+
+
 def display_all_guests():
     guests = Guest.get_all()
     print("\n===== All Guests =====")
     for guest in guests:
         print(f"{guest.id}. {guest.name} - {guest.email}")
 
+
+
 def display_all_venues():
     venues = Venue.get_all()
     print("\n===== All Venues =====")
     for venue in venues:
         print(f"{venue.id}. {venue.name} - {venue.address}")
+
 
 def view_guests_of_event():
     events = Event.get_all()
@@ -324,6 +245,9 @@ def view_guests_of_event():
     except ValueError:
         print("\nInvalid input. Please enter a valid Event ID.")
 
+
+
+
 def find_event_by_id():
     event_id = input("\nEnter Event ID to find: ")
     try:
@@ -336,17 +260,49 @@ def find_event_by_id():
     except ValueError:
         print("\nInvalid input. Please enter a valid Event ID.")
 
+
+
+
+
+
 def find_guest_by_id():
     guest_id = input("\nEnter Guest ID to find: ")
     try:
-        guest_id = int(guest_id)
-        guest = Guest.find_by_id(guest_id)
+        
+        guest_id = 1
+        guest = session.query(Guest).filter_by(id=guest_id).first()
         if guest:
-            print(f"\nGuest found: {guest}")
+           print(f"Guest {guest.name} is attending events: {[event.name for event in guest.events_attending]}")
         else:
-            print(f"\nGuest with ID {guest_id} not found.")
+           print(f"Guest with ID {guest_id} not found.")
+    # guest_id = int(input("Enter Guest ID to find: "))
+    
+    
+    # session = SessionLocal()
+    
+    # try:
+    #     from models.guest import Guest  
+        
+        
+    #     guest = session.query(Guest).filter_by(id=guest_id).first()
+        
+    #     if guest:
+    #         print(f"Found Guest: {guest.name}")
+    #     else:
+    #         print(f"No guest found with ID {guest_id}")
+    
+   
     except ValueError:
         print("\nInvalid input. Please enter a valid Guest ID.")
+
+
+
+
+
+
+
+
+
 
 def main():
     while True:

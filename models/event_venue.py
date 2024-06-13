@@ -2,9 +2,14 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+
+
 from models.base import Base
 from datetime import datetime
 
+Base = declarative_base()
 
 DATABASE_URL = 'sqlite:///event_planner.db'
 engine = create_engine(DATABASE_URL)

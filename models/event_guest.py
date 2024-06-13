@@ -27,6 +27,10 @@ from sqlalchemy.orm import relationship
 from models.base import Base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
 
 DATABASE_URL = 'sqlite:///event_planner.db'
 engine = create_engine(DATABASE_URL)

@@ -25,6 +25,9 @@ from sqlalchemy.orm import relationship
 from models.base import Base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 DATABASE_URL = 'sqlite:///event_planner.db'
 engine = create_engine(DATABASE_URL)
@@ -39,7 +42,9 @@ class Guest(Base):
     email = Column(String, nullable=False)
     phone = Column(String(20), nullable=False)
 
-    event_guests = relationship("EventGuest", back_populates="guest")
+    # event_guests = relationship("EventGuest", back_populates="guest")
+    events_attending = relationship("Event", secondary="event_guest", back_populates="guests")
+
 
     def __init__(self, name, email, phone):
         self.name = name

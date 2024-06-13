@@ -6,6 +6,10 @@ from models.base import Base
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
 
 DATABASE_URL = 'sqlite:///event_planner.db'
 engine = create_engine(DATABASE_URL)
@@ -24,8 +28,11 @@ class Event(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
-    event_guests = relationship("EventGuest", back_populates="event")
+    # event_guests = relationship("EventGuest", back_populates="event")
     event_venues = relationship("EventVenue", back_populates="event")
+    guests_attending = relationship("Guest", secondary="event_guest", back_populates="events")
+    events_attending = relationship("Event", secondary="event_guest", back_populates="guests")
+
 
 
 
