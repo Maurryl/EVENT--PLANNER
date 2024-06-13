@@ -27,7 +27,6 @@ https://github.com/Maurryl/EVENT--PLANNER
 Python
 
 ##Validation
-
     Check database entries after creating events, assigning guests, and venues.
     Verify that operations like adding, updating, and deleting entities work as intended.
     Ensure error handling is effective by testing with incorrect inputs and observing error messages.
