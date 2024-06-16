@@ -1,16 +1,23 @@
-from sqlalchemy import Column, Integer, ForeignKey
+# models/event.py
+
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from . import Base
 
-class EventGuest(Base):
-    __tablename__ = 'event_guests'
+class Event(Base):
+    __tablename__ = 'events'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    event_id = Column(Integer, ForeignKey('events.id'))
-    guest_id = Column(Integer, ForeignKey('guests.id'))
+    name = Column(String, nullable=False)
+    description = Column(String)
+    date = Column(DateTime, nullable=False)
+    location = Column(String, nullable=False)
 
-    event = relationship("Event", back_populates="event_guests")
-    guest = relationship("Guest", back_populates="event_guests")
+    # Define relationship to EventGuest
+    event_guests = relationship("EventGuest", back_populates="event")
+
+    # Define relationship to EventVenue
+    event_venues = relationship("EventVenue", back_populates="event")
 
     def __repr__(self):
-        return f"<EventGuest(id={self.id}, event_id={self.event_id}, guest_id={self.guest_id})>"
+        return f"<Event(id={self.id}, name={self.name}, date={self.date}, location={self.location})>"
